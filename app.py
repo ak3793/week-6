@@ -192,20 +192,20 @@ def getData():
 	mse_min = 10000000000000000000000
 
 	for C in [.01, 1, 100, 10000, 1000000]:
-    	for e in [.01, 1, 100, 10000, 1000000]:
-            for g in [.01, 1, 100, 10000, 1000000]:
+    	   for e in [.01, 1, 100, 10000, 1000000]:
+                for g in [.01, 1, 100, 10000, 1000000]:
 
-                q.put("training model: C[" + str(C) + "], e[" + str(e) + "], g[" + str(g) + "]")
+                    q.put("training model: C[" + str(C) + "], e[" + str(e) + "], g[" + str(g) + "]")
+    
+                    model = svm.SVR(C=C, epsilon=e, gamma=g, kernel='rbf', cache_size=2000)
+                    model.fit(X_train_scaled, y_train)
 
-                model = svm.SVR(C=C, epsilon=e, gamma=g, kernel='rbf', cache_size=2000)
-                model.fit(X_train_scaled, y_train)
+                    y_val_p = [model.predict(i) for i in X_val]
 
-                y_val_p = [model.predict(i) for i in X_val]
-
-                mse = 0
+                    mse = 0
                 for i in range(len(y_val_p)):
                     mse += (y_val_p[i] - y_val[i]) ** 2
-                mse /= len(y_val_p)
+                    mse /= len(y_val_p)
 
                 if mse < mse_min:
                     mse_min = mse
